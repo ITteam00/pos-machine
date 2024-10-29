@@ -64,6 +64,7 @@ describe("getAllReceiptItems", () => {
         price: 3.0,
         promotionType: "BUY_TWO_GET_ONE_FREE",
         quantity: 1,
+        subtotal: 3,
       },
     ];
 

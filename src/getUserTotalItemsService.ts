@@ -25,16 +25,19 @@ export class getUserTotalItemsService {
           promotionType: promotion ? promotion.type : "NONE",
           quantity: quantity,
         };
+        if (receiptItem.quantity != 1) {
+          receiptItem.unit = receiptItem.unit + "s";
+        }
         receiptItems.push(receiptItem);
       }
     }
-    return receiptItems;
+    return getItemSubtotal(receiptItems);
   }
 }
 export function countItems(items: string[]): Record<string, number> {
   return items.reduce((acc, item) => {
     const [itemId, count] = item.split("-");
-    const itemCount = count ? parseInt(count, 10) : 1;
+    const itemCount = count ? parseFloat(count) : 1;
 
     if (acc[itemId]) {
       acc[itemId] += itemCount;
