@@ -14,14 +14,15 @@ interface ItemDictionary {
   [barcode: string]: ItemRecord;
 }
 
+
 function convertToDictionary(items: ItemRecord[]): ItemDictionary {
   const dictionary: ItemDictionary = {};
   for (const item of items) {
     if (dictionary[item.barcode]) {
-      dictionary[item.barcode].quantity += 1;
+      dictionary[item.barcode].quantity += item.quantity;
       dictionary[item.barcode].isProMotion=dictionary[item.barcode].quantity>2?true:false
     } else {
-      dictionary[item.barcode] = { ...item, quantity: 1 };
+      dictionary[item.barcode] = { ...item, quantity: item.quantity };
     }
   }
   return dictionary;
@@ -39,6 +40,7 @@ export function getItemsCount(tags: string[]): ItemDictionary {
 
   tags.forEach(tag => {
     const tagValue = tag.split('-')
+    console.log(tagValue)
       allItems.forEach(item=>{
         if(item.barcode===tagValue[0]){
           let itemDetal:ItemRecord={
@@ -47,7 +49,7 @@ export function getItemsCount(tags: string[]): ItemDictionary {
             unit: item.unit,
             price: item.price,
             isProMotion: false,
-            quantity: tagValue.length>1?0:parseFloat(tagValue[1]),
+            quantity: tagValue.length<=1?1:Number(tagValue[1]),
             totalExpense:0
           }
           itemsList.push(itemDetal)
@@ -62,6 +64,8 @@ export function calculateExpense(itemDictionary:ItemDictionary):void{
     itemDictionary[item].totalExpense=(itemDictionary[item].quantity-Math.floor(itemDictionary[item].quantity/3))*itemDictionary[item].price
   }
 }
+
+
 
 
 
