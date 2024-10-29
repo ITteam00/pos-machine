@@ -7,24 +7,33 @@ interface Item {
   price: number
 }
 
+
 export function printReceipt(tags: string[]): string {
+  const allItems = loadAllItems();
   let itemQuantity = calculateQuantity(tags)
   let {itemSubtotal, totalDiscount} = calculateSubtotal(itemQuantity)
   let totalPrice = 0
+  let receiptItems = '';
+
   for (let [barcode, subtotal] of itemSubtotal) {
     totalPrice += subtotal
+    const item = allItems.find(item => item.barcode === barcode);
+    const quantity = itemQuantity.get(barcode);
+    if (item && quantity !== undefined) {
+      receiptItems += `Name：${item.name}，Quantity：${quantity} ${item.unit}${quantity > 1 ? 's' : ''}，Unit：${item.price.toFixed(2)}(yuan)，Subtotal：${subtotal.toFixed(2)}(yuan)\n`;
+    }
   }
   let totalPriceStr= totalPrice.toFixed(2);
   let totalDiscountStr = totalDiscount.toFixed(2);
-  // console.log("!!!!!!")
-  // console.log(totalPriceStr)
+ 
 
   return `***<store earning no money>Receipt ***
-----------------------
+${receiptItems}----------------------
 Total：${totalPriceStr}(yuan)
 Discounted prices：${totalDiscountStr}(yuan)
 **********************`
 }
+
 
 export function calculateQuantity(tags: string[]) {
   let itemQuantity = new Map<string, number>()
