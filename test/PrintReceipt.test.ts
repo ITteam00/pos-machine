@@ -121,15 +121,30 @@ describe("format", () => {
     const totalItems = [
       {
         barcode: "ITEM000000",
-        name: "Coca-Cola",
-        unit: "bottle",
+        name: "Sprite",
+        unit: "bottles",
         price: 3.0,
         promotionType: "BUY_TWO_GET_ONE_FREE",
-        quantity: 1,
-        subtotal: 3,
+        quantity: 5,
+        subtotal: 12,
+      },
+      {
+        barcode: "ITEM000000",
+        name: "Litchi",
+        unit: "pounds",
+        price: 15.0,
+        promotionType: "NONE",
+        quantity: 2.5,
+        subtotal: 37.5,
       },
     ];
-    const output = "";
+    const output = `***<store earning no money>Receipt ***
+Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
+Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
+----------------------
+Total：49.50(yuan)
+Discounted prices：3.00(yuan)
+**********************`;
     expect(FormatService.format(totalItems)).toEqual(output);
   });
 });
