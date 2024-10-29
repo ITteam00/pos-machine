@@ -36,7 +36,9 @@ export function isPromotion(barcode: string): boolean {
 
 
 export function printReceipt(tags: string[]): string {
-  return ''
+  const itemDictionary = getItemsCount(tags)
+  calculateExpense(itemDictionary)
+  return formatReceipt(itemDictionary)
 }
 
 
@@ -85,6 +87,19 @@ export function calculateDiscount(itemDictionary: ItemDictionary): [number, numb
   return [realPrice, totalPrice - realPrice]
 }
 
+export function formatReceipt(itemDictionary: ItemDictionary): string {
+  let res = "***<store earning no money>Receipt ***\n"
+  for (const item in itemDictionary) {
+    res += `Name：${itemDictionary[item].name}，Quantity：${
+      itemDictionary[item].quantity} ${itemDictionary[item].unit}${itemDictionary[item].quantity > 1 ? 's' : ''}，Unit：${
+        itemDictionary[item].price.toFixed(2)}(yuan)，Subtotal：${itemDictionary[item].totalExpense.toFixed(2)}(yuan)\n`
+  }
+  res += `----------------------
+Total：${calculateDiscount(itemDictionary)[0].toFixed(2)}(yuan)
+Discounted prices：${calculateDiscount(itemDictionary)[1].toFixed(2)}(yuan)
+**********************`
+  return res
+}
 
 
 
