@@ -65,7 +65,15 @@ export function calculateExpense(itemDictionary:ItemDictionary):void{
   }
 }
 
-
+export function calculateDiscount(itemDictionary:ItemDictionary):number{
+  let totalPrice=0;
+  let realPrice=0;
+  for(const item in itemDictionary){
+    realPrice+=itemDictionary[item].totalExpense
+    totalPrice+=itemDictionary[item].quantity*itemDictionary[item].price
+  }
+  return totalPrice-realPrice
+}
 
 
 
