@@ -1,12 +1,5 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
 
-interface Item {
-  barcode: string,
-  name: string,
-  unit: string,
-  price: number
-}
-
 
 export function printReceipt(tags: string[]): string {
   const allItems = loadAllItems();
@@ -68,7 +61,15 @@ export function calculateSubtotal(itemQuantity:Map<string,number>) {
     const allItems  = loadAllItems();
     const item = allItems.find(item => item.barcode == barcode)
     const singlePrice: number = item? item.price : 9999
-    let subDiscount : number = singlePrice * Math.floor(quantity/3)
+    let subDiscount = 0
+    let isPromotion = false
+    let allPromotions = loadPromotions()
+    if (allPromotions[0].barcodes.includes(barcode)) {
+      isPromotion = true
+    }
+    if (isPromotion) {
+      subDiscount = singlePrice * Math.floor(quantity/3)
+    }
     totalDiscount += subDiscount
     let subtotal = singlePrice * quantity - subDiscount
     itemSubtotal.set(barcode, subtotal)
