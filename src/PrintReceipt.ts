@@ -23,20 +23,10 @@ export function printReceipt(tags: string[]): string {
   const itemsInfo = extractItemInfo(items, tagsCount);
 
   const itemsInfoWithPromotions = setItemPromotion(itemsInfo, promotions);
-
   const itemsWithTotalprice = getPrice(itemsInfoWithPromotions);
 
-
-
-  const receipt = `***<store earning no money>Receipt ***
-Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
-Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
-Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00(yuan)
-----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
-**********************`;
-  return receipt;
+  const re = generateReceipt(itemsWithTotalprice);
+  return re;
 }
 
 export function countTags(tags: string[]): Map<string, number> {
@@ -104,3 +94,31 @@ export function getPrice(items: ItemInfo[]): ItemInfo[] {
   return re;
 }
 
+
+export function generateReceipt(items: ItemInfo[]): string {
+  let total = 0;
+  let discountedTotal = 0;
+  let receipt = "***<store earning no money>Receipt ***\n";
+
+  items.forEach((item) => {
+    if (item.quantity && item.totalPrice !== undefined) {
+      const subtotal = item.totalPrice;
+      total += subtotal;
+      const discount = item.price * item.quantity - subtotal;
+      discountedTotal += discount;
+
+      receipt += `Name：${item.name}，Quantity：${item.quantity} ${item.unit}${
+        item.quantity > 1 ? "s" : ""
+      }，Unit：${item.price.toFixed(2)}(yuan)，Subtotal：${subtotal.toFixed(
+        2
+      )}(yuan)\n`;
+    }
+  });
+
+  receipt += "----------------------\n";
+  receipt += `Total：${total.toFixed(2)}(yuan)\n`;
+  receipt += `Discounted prices：${discountedTotal.toFixed(2)}(yuan)\n`;
+  receipt += "**********************";
+
+  return receipt;
+}
