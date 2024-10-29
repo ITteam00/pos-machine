@@ -7,6 +7,7 @@ interface ItemRecord {
   price: number;
   isProMotion: boolean;
   quantity: number;
+  totalExpense:number
 }
 
 interface ItemDictionary {
@@ -32,7 +33,6 @@ export function printReceipt(tags: string[]): string {
 }
 
 
-
 export function getItemsCount(tags: string[]): ItemDictionary {
   const itemsList:ItemRecord[]=[]
   const allItems = loadAllItems()
@@ -47,13 +47,20 @@ export function getItemsCount(tags: string[]): ItemDictionary {
             unit: item.unit,
             price: item.price,
             isProMotion: false,
-            quantity: tagValue.length>1?0:parseFloat(tagValue[1]),            
+            quantity: tagValue.length>1?0:parseFloat(tagValue[1]),
+            totalExpense:0
           }
           itemsList.push(itemDetal)
         }
       })
     });
     return convertToDictionary(itemsList)
+}
+
+export function calculateExpense(itemDictionary:ItemDictionary):void{
+  for(const item in itemDictionary){
+    itemDictionary[item].totalExpense=(itemDictionary[item].quantity-Math.floor(itemDictionary[item].quantity/3))*itemDictionary[item].price
+  }
 }
 
 
