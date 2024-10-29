@@ -1,4 +1,4 @@
-import { printReceipt} from '../src/PrintReceipt'
+import { printReceipt, getProcessedCart,Item } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -57,4 +57,43 @@ Discounted prices：3.00(yuan)
  
     expect(printReceipt(tags)).toEqual(expectText)
   })
+});
+
+
+describe('getProcessedCart', () => {
+  const items: Item[] = [
+    { barcode: 'ITEM000001', name: 'Sprite', unit: 'bottle', price: 3.00 },
+    { barcode: 'ITEM000003', name: 'Litchi', unit: 'pound', price: 15.00 },
+    { barcode: 'ITEM000005', name: 'Instant Noodles', unit: 'bag', price: 4.50 }
+  ];
+
+  it('should process cart with single items correctly', () => {
+    const tags = ['ITEM000001-2', 'ITEM000003-1'];
+    const expected = ['ITEM000001-2', 'ITEM000003-1'];
+    expect(getProcessedCart(tags)).toEqual(expected);
+  });
+
+  it('should process cart with multiple quantities correctly', () => {
+    const tags = ['ITEM000001-2', 'ITEM000001-3'];
+    const expected = ['ITEM000001-5'];
+    expect(getProcessedCart(tags)).toEqual(expected);
+  });
+
+  it('should handle items without quantity specified', () => {
+    const tags = ['ITEM000001', 'ITEM000003-2'];
+    const expected = ['ITEM000001-1', 'ITEM000003-2'];
+    expect(getProcessedCart(tags)).toEqual(expected);
+  });
+
+  it('should get cart', () => {
+    const tags = ['ITEM000001','ITEM000001', 'ITEM000007'];
+    const expected =['ITEM000001-2', 'ITEM000007-1'];
+    expect(getProcessedCart(tags)).toEqual(expected);
+  });
+
+  it('should sum quantities for multiple entries of the same item', () => {
+    const tags = ['ITEM000001-2', 'ITEM000001-3', 'ITEM000003-1', 'ITEM000003-2'];
+    const expected = ['ITEM000001-5', 'ITEM000003-3'];
+    expect(getProcessedCart(tags)).toEqual(expected);
+  });
 });

@@ -6,38 +6,20 @@ export interface Item {
   unit: string;
   price: number;
 }
+
 export function printReceipt(tags: string[]): string {
   const printedItems: string[] = [];
-  const items = loadAllItems();
 
+  const items = loadAllItems();
   const promotions = loadPromotions();
+
   const discounts: { item: string; quantity: number }[] = [];
   const noDiscounts: { item: string; quantity: number }[] = [];
   let totalSubtotal = 0;
-  const processedCart = tags.reduce((acc: string[], curr: string) => {
-    const [curBarcode, quantity] = curr.split("-");
-    const product = items.find((item) => item.barcode === curBarcode);
-    if (!product) return acc;
-    let parsedQuantity = Number(quantity);
-    if (isNaN(parsedQuantity)) {
-      parsedQuantity = 1;
-    }
-    const existingItem = acc.find((item) => item.startsWith(curBarcode));
-    if (existingItem) {
-      const [, existingQuantity] = existingItem.split("-");
-      let parsedexistingQuantity = Number(existingQuantity);
-      if (isNaN(parsedexistingQuantity)) {
-        parsedexistingQuantity = 1;
-      }
-      acc[acc.indexOf(existingItem)] = `${curBarcode}-${
-        parsedQuantity + Number(parsedexistingQuantity)
-      }`;
-    } else {
-      acc.push(curr);
-    }
-    return acc;
-  }, []);
-  console.log(processedCart)
+
+  const processedCart = getProcessedCart(tags);
+
+
   const promotionItems = promotions[0].barcodes;
   const promotionQuantity = 3;
   for (let item of processedCart) {
@@ -83,4 +65,28 @@ Total：${totalSubtotal.toFixed(2) }(yuan)
 Discounted prices：${totalDiscount.toFixed(2)}(yuan)
 **********************`;
   return receipt;
+}
+
+
+export function getProcessedCart(tags: string[]): string[] {
+  const itemCounts = new Map<string, number>();
+
+  tags.forEach(tag => {
+    let quantityToAdd = 1;
+    let barcode = tag;
+
+    if (tag.includes("-")) {
+      const [itemBarcode, quantity] = tag.split("-");
+      barcode = itemBarcode;
+      quantityToAdd = parseFloat(quantity);
+    }
+
+    if (itemCounts.has(barcode)) {
+      itemCounts.set(barcode, itemCounts.get(barcode)! + quantityToAdd);
+    } else {
+      itemCounts.set(barcode, quantityToAdd);
+    }
+  });
+
+  return Array.from(itemCounts, ([barcode, quantity]) => `${barcode}-${quantity}`);
 }
