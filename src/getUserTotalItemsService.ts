@@ -1,14 +1,14 @@
 import { Item } from "../PosMachineDTO/ItemsDTO";
 import { Promotion } from "../PosMachineDTO/PromotionsDTO";
-import { ReceiptItem } from "../PosMachineDTO/ReceiptItemsDTO";
+import { ReceiptItemWithSubtotal } from "../PosMachineDTO/ReceiptItemsDTO";
 
 export class getUserTotalItemsService {
   public static getUserTotalReceiptItems(
     allItems: Item[],
     allPromotions: Promotion[],
     inPutBarcodes: string[]
-  ): ReceiptItem[] {
-    const receiptItems: ReceiptItem[] = [];
+  ): ReceiptItemWithSubtotal[] {
+    const receiptItems: ReceiptItemWithSubtotal[] = [];
     const itemCounts = countItems(inPutBarcodes);
     for (const [barcode, quantity] of Object.entries(itemCounts)) {
       const item = allItems.find((item) => item.barcode === barcode);
@@ -17,7 +17,7 @@ export class getUserTotalItemsService {
       );
 
       if (item) {
-        const receiptItem: ReceiptItem = {
+        const receiptItem: ReceiptItemWithSubtotal = {
           barcode: item.barcode,
           name: item.name,
           unit: item.unit,
