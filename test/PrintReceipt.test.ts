@@ -39,5 +39,22 @@ Discounted prices：0.00(yuan)
  
     expect(printReceipt(tags)).toEqual(expectText)
   })
+  it('should print receipt with one promotion when print receipt', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+    ]
  
+    const expectText = `***<store earning no money>Receipt ***
+Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
+----------------------
+Total：12.00(yuan)
+Discounted prices：3.00(yuan)
+**********************`
+ 
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
 });

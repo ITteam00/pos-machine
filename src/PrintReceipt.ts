@@ -25,7 +25,7 @@ export function printReceipt(tags: string[]): string {
     const existingItem = acc.find((item) => item.startsWith(curBarcode));
     if (existingItem) {
       const [, existingQuantity] = existingItem.split("-");
-      let parsedexistingQuantity = Number(quantity);
+      let parsedexistingQuantity = Number(existingQuantity);
       if (isNaN(parsedexistingQuantity)) {
         parsedexistingQuantity = 1;
       }
@@ -52,9 +52,9 @@ export function printReceipt(tags: string[]): string {
     }
     else{
       noDiscounts.push({ item: curBarcode, quantity: parsedQuantity });
-      const product = items.find((item) => item.barcode === processedCart[0]);
+      const product = items.find((item) => item.barcode === curBarcode );
       printedItems.push(
-        `Name：${product?.name}，Quantity：${parsedQuantity} ${product?.unit}，Unit：${product?.price.toFixed(2)}(yuan)，Subtotal：${(product!.price *parsedQuantity).toFixed(2) }(yuan)`
+        `Name：${product!.name}，Quantity：${parsedQuantity} ${product!.unit}，Unit：${product!.price.toFixed(2)}(yuan)，Subtotal：${(product!.price *parsedQuantity).toFixed(2) }(yuan)`
       );
     }
   }
@@ -64,19 +64,23 @@ export function printReceipt(tags: string[]): string {
   discounts.forEach(discount => {
       const product = items.find((item) => item.barcode === discount.item);
       const discountAmount = product!.price * Math.max(0, discount.quantity - promotionQuantity);
+      const amount = product!.price * discount.quantity;
+      totalSubtotal += amount - discountAmount;
       totalDiscount += discountAmount;
+      printedItems.push(
+        `Name：${product!.name}，Quantity：${discount.quantity} ${product!.unit}，Unit：${product!.price.toFixed(2)}(yuan)，Subtotal：${(product!.price *discount.quantity - discountAmount).toFixed(2) }(yuan)`)
   });
 
-  noDiscounts.forEach(discount => {
-    const product = items.find((item) => item.barcode === discount.item);
-    const discountAmount = product!.price * Math.max(0, discount.quantity - promotionQuantity);
-    totalSubtotal += discountAmount;
+  noDiscounts.forEach(nodiscount => {
+    const product = items.find((item) => item.barcode === nodiscount.item);
+    const amount = product!.price * nodiscount.quantity;
+    totalSubtotal += amount;
 });
   const receipt = `***<store earning no money>Receipt ***
 ${printedItems.join('\n')}
 ----------------------
-Total：3.00(yuan)
-Discounted prices：0.00(yuan)
+Total：${totalSubtotal.toFixed(2) }(yuan)
+Discounted prices：${totalDiscount.toFixed(2)}(yuan)
 **********************`;
   return receipt;
 }
