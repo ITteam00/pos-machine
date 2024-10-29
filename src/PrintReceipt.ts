@@ -1,15 +1,10 @@
-import {loadAllItems, loadPromotions} from './Dependencies'
-
+import { loadAllItems, loadPromotions } from "./Dependencies";
 
 export function printReceipt(tags: string[]): string {
   const items = loadAllItems();
   const promotions = loadPromotions();
 
   const tagsCount = countTags(tags);
-
-
-
-
 
   const receipt = `***<store earning no money>Receipt ***
 Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
@@ -22,15 +17,14 @@ Discounted prices：7.50(yuan)
   return receipt;
 }
 
-export function countTags(tags: string[]): Map<string, number>{
+export function countTags(tags: string[]): Map<string, number> {
   const cnt = new Map<string, number>();
-  tags.forEach(tag => {
+  tags.forEach((tag) => {
     if (cnt.has(tag)) {
       cnt.set(tag, cnt.get(tag)! + 1);
     } else {
       cnt.set(tag, 1);
     }
-  })
+  });
   return cnt;
 }
-
