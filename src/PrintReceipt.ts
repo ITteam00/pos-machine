@@ -4,12 +4,12 @@ export function printReceipt(tags: string[]): string {
   return ''
 }
 
-function calculateQuantity(tags: string[]) {
+export function calculateQuantity(tags: string[]) {
   let itemQuantity = new Map<string, number>()
   return itemQuantity
 }
 
-function calculateSubtotal(tags: string[]) {
+export function calculateSubtotal(tags: string[]) {
   let itemSubtotal = new Map<string, number>()
   return itemSubtotal
 }

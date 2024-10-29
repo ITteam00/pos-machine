@@ -1,4 +1,6 @@
 import {printReceipt} from '../src/PrintReceipt'
+import { calculateQuantity } from '../src/PrintReceipt'
+import { calculateSubtotal } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -35,6 +37,49 @@ Discounted prices：0.00(yuan)
 **********************`
 
     expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+
+  it('should return item-quantity hashMap when use calculateQuantity', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const expectDict = new Map<string, number>();
+    expectDict.set('ITEM000001', 5)
+    expectDict.set('ITEM000003', 2.5)
+    expectDict.set('ITEM000005', 3)
+
+    expect(calculateQuantity(tags)).toEqual(expectDict)
+  })
+  
+
+
+  it('should return item-subtotal hashMap when use calculateSubtotal', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const expectDict = new Map<string, number>();
+    expectDict.set('ITEM000001', 12.00)
+    expectDict.set('ITEM000003', 37.5)
+    expectDict.set('ITEM000005', 9.00)
+
+    expect(calculateSubtotal(tags)).toEqual(expectDict)
   })
 
 })
