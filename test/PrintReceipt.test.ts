@@ -1,4 +1,7 @@
-import { countItems } from "../src/getUserTotalItemsService";
+import {
+  countItems,
+  getUserTotalItemsService,
+} from "../src/getUserTotalItemsService";
 import { printReceipt } from "../src/PrintReceipt";
 
 describe("printReceipt", () => {
@@ -50,7 +53,24 @@ describe("getAllReceiptItems", () => {
     ];
     const barcode = ["ITEM000000"];
 
-    expect();
+    const output = [
+      {
+        barcode: "ITEM000000",
+        name: "Coca-Cola",
+        unit: "bottle",
+        price: 3.0,
+        promotionType: "BUY_TWO_GET_ONE_FREE",
+        quantity: 1,
+      },
+    ];
+
+    expect(
+      getUserTotalItemsService.getUserTotalReceiptItems(
+        allItems,
+        allPromotions,
+        barcode
+      )
+    ).toEqual();
   });
 });
 

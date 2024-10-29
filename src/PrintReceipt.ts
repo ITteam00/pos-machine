@@ -1,5 +1,3 @@
-import { loadAllItems, loadPromotions } from "./Dependencies";
-
 export function printReceipt(tags: string[]): string {
   return `***<store earning no money>Receipt ***
 Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
