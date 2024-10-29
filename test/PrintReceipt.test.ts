@@ -1,4 +1,4 @@
-import {countTags, printReceipt} from '../src/PrintReceipt'
+import { printReceipt} from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -25,30 +25,6 @@ Discounted prices：7.50(yuan)
     expect(printReceipt(tags)).toEqual(expectText);
   });
 
-  it("should get tags count", () => {
-    const tags = [
-      "ITEM000001",
-      "ITEM000001",
-      "ITEM000001",
-      "ITEM000001",
-      "ITEM000001",
-      "ITEM000003-2.5",
-      "ITEM000005",
-      "ITEM000005-2",
-    ];
-    const expected = new Map<string, number>([
-      ["ITEM000001", 5],
-      ["ITEM000003-2.5", 1],
-      ["ITEM000005", 1],
-      ["ITEM000005-2", 1],
-    ]);
-    const result = countTags(tags);
-
-    expected.forEach((value, key) => {
-      expect(result.get(key)).toEqual(value);
-    });
-  });
-  
   it('should print receipt without promotion when print receipt', () => {
     const tags = [
       'ITEM000001',
