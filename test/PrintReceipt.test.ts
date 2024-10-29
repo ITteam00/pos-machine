@@ -1,6 +1,6 @@
 import { printReceipt, getProcessedCart,Item } from '../src/PrintReceipt'
 
-describe('printReceipt', () => {
+fdescribe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
     const tags = [
       'ITEM000001',
