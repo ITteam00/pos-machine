@@ -9,10 +9,21 @@ interface Item {
 
 export function printReceipt(tags: string[]): string {
   let itemQuantity = calculateQuantity(tags)
-
-  let totalPrice = 0
   let {itemSubtotal, totalDiscount} = calculateSubtotal(itemQuantity)
-  return ''
+  let totalPrice = 0
+  for (let [barcode, subtotal] of itemSubtotal) {
+    totalPrice += subtotal
+  }
+  let totalPriceStr= totalPrice.toFixed(2);
+  let totalDiscountStr = totalDiscount.toFixed(2);
+  // console.log("!!!!!!")
+  // console.log(totalPriceStr)
+
+  return `***<store earning no money>Receipt ***
+----------------------
+Total：${totalPriceStr}(yuan)
+Discounted prices：${totalDiscountStr}(yuan)
+**********************`
 }
 
 export function calculateQuantity(tags: string[]) {
@@ -42,17 +53,12 @@ export function calculateQuantity(tags: string[]) {
 
 
 export function calculateSubtotal(itemQuantity:Map<string,number>) {
-  // console.log("!!!!!!!!!")
-  // console.log(itemQuantity)
   let itemSubtotal = new Map<string, number>()
   let totalDiscount = 0
   for ( let [barcode, quantity] of itemQuantity) {
     const allItems  = loadAllItems();
-    console.log("!!!!!!!!!")
     const item = allItems.find(item => item.barcode == barcode)
     const singlePrice: number = item? item.price : 9999
-    console.log("singlePrice ", singlePrice)
-
     let subDiscount : number = singlePrice * Math.floor(quantity/3)
     totalDiscount += subDiscount
     let subtotal = singlePrice * quantity - subDiscount
