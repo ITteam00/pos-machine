@@ -7,12 +7,14 @@ interface ItemRecord {
   price: number;
   isProMotion: boolean;
   quantity: number;
-  totalExpense:number
+  totalExpense: number
 }
 
 interface ItemDictionary {
   [barcode: string]: ItemRecord;
 }
+
+const allPromotion = loadPromotions()
 
 
 function convertToDictionary(items: ItemRecord[]): ItemDictionary {
@@ -20,12 +22,16 @@ function convertToDictionary(items: ItemRecord[]): ItemDictionary {
   for (const item of items) {
     if (dictionary[item.barcode]) {
       dictionary[item.barcode].quantity += item.quantity;
-      dictionary[item.barcode].isProMotion=dictionary[item.barcode].quantity>2?true:false
+      dictionary[item.barcode].isProMotion = isPromotion(item.barcode)
     } else {
       dictionary[item.barcode] = { ...item, quantity: item.quantity };
     }
   }
   return dictionary;
+}
+
+export function isPromotion(barcode: string): boolean {
+  return allPromotion[0].barcodes.includes(barcode)
 }
 
 
@@ -35,28 +41,27 @@ export function printReceipt(tags: string[]): string {
 
 
 export function getItemsCount(tags: string[]): ItemDictionary {
-  const itemsList:ItemRecord[]=[]
+  const itemsList: ItemRecord[] = []
   const allItems = loadAllItems()
 
   tags.forEach(tag => {
     const tagValue = tag.split('-')
-    console.log(tagValue)
-      allItems.forEach(item=>{
-        if(item.barcode===tagValue[0]){
-          let itemDetal:ItemRecord={
-            barcode: item.barcode,
-            name: item.name,
-            unit: item.unit,
-            price: item.price,
-            isProMotion: false,
-            quantity: tagValue.length<=1?1:Number(tagValue[1]),
-            totalExpense:0
-          }
-          itemsList.push(itemDetal)
+    allItems.forEach(item => {
+      if (item.barcode === tagValue[0]) {
+        let itemDetal: ItemRecord = {
+          barcode: item.barcode,
+          name: item.name,
+          unit: item.unit,
+          price: item.price,
+          isProMotion: false,
+          quantity: tagValue.length <= 1 ? 1.00 : parseFloat(tagValue[1]),
+          totalExpense: 0
         }
-      })
-    });
-    return convertToDictionary(itemsList)
+        itemsList.push(itemDetal)
+      }
+    })
+  });
+  return convertToDictionary(itemsList)
 }
 
 export function calculateExpense(itemDictionary:ItemDictionary):void{
@@ -72,7 +77,7 @@ export function calculateDiscount(itemDictionary:ItemDictionary):number{
     realPrice+=itemDictionary[item].totalExpense
     totalPrice+=itemDictionary[item].quantity*itemDictionary[item].price
   }
-  return totalPrice-realPrice
+  return [realPrice, totalPrice - realPrice]
 }
 
 
