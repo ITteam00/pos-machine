@@ -27,7 +27,7 @@ Discounted prices：7.50(yuan)
     expect(printReceipt(tags)).toEqual(expectText)
   })
 
-  it('should print receipt with promotion when print receipt', () => {
+  it('should print empty receipt when print receipt', () => {
     const tags: string[] = []
 
     const expectText = `***<store earning no money>Receipt ***
@@ -74,12 +74,20 @@ Discounted prices：0.00(yuan)
       'ITEM000005-2',
     ]
 
-    const expectDict = new Map<string, number>();
-    expectDict.set('ITEM000001', 12.00)
-    expectDict.set('ITEM000003', 37.5)
-    expectDict.set('ITEM000005', 9.00)
+    const itemQuantity = new Map<string, number>();
+    itemQuantity.set('ITEM000001', 5)
+    itemQuantity.set('ITEM000003', 2.5)
+    itemQuantity.set('ITEM000005', 3)
 
-    expect(calculateSubtotal(tags)).toEqual(expectDict)
+
+    const expectItemSubtotalDict = new Map<string, number>();
+    expectItemSubtotalDict.set('ITEM000001', 12.00)
+    expectItemSubtotalDict.set('ITEM000003', 37.5)
+    expectItemSubtotalDict.set('ITEM000005', 9.00)
+
+    const expectedRes = {itemSubtotal:expectItemSubtotalDict, totalDiscount:7.50}
+
+    expect(calculateSubtotal(itemQuantity)).toEqual(expectedRes)
   })
 
 })
