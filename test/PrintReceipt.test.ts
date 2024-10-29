@@ -1,3 +1,4 @@
+import { FormatService } from "../src/FormatService";
 import {
   countItems,
   getUserTotalItemsService,
@@ -93,5 +94,23 @@ describe("countItems", () => {
       ITEM000005: 3,
     };
     expect(countItems(barcode)).toEqual(output);
+  });
+});
+
+describe("format", () => {
+  it("should return format receipt", () => {
+    const totalItems = [
+      {
+        barcode: "ITEM000000",
+        name: "Coca-Cola",
+        unit: "bottle",
+        price: 3.0,
+        promotionType: "BUY_TWO_GET_ONE_FREE",
+        quantity: 1,
+        subtotal: 3,
+      },
+    ];
+    const output = "";
+    expect(FormatService.format(totalItems)).toEqual(output);
   });
 });
