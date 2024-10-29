@@ -7,7 +7,7 @@ export class getUserTotalItemsService {
     allItems: Item[],
     allPromotions: Promotion[],
     inPutBarcodes: string[]
-  ) {
+  ): ReceiptItem[] {
     const receiptItems: ReceiptItem[] = [];
     const itemCounts = countItems(inPutBarcodes);
     for (const [barcode, quantity] of Object.entries(itemCounts)) {
@@ -28,6 +28,7 @@ export class getUserTotalItemsService {
         receiptItems.push(receiptItem);
       }
     }
+    return receiptItems;
   }
 }
 export function countItems(items: string[]): Record<string, number> {

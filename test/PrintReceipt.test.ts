@@ -70,7 +70,7 @@ describe("getAllReceiptItems", () => {
         allPromotions,
         barcode
       )
-    ).toEqual();
+    ).toEqual(output);
   });
 });
 
