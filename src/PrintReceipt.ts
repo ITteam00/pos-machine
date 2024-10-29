@@ -18,6 +18,7 @@ function convertToDictionary(items: ItemRecord[]): ItemDictionary {
   for (const item of items) {
     if (dictionary[item.barcode]) {
       dictionary[item.barcode].quantity += 1;
+      dictionary[item.barcode].isProMotion=dictionary[item.barcode].quantity>2?true:false
     } else {
       dictionary[item.barcode] = { ...item, quantity: 1 };
     }
@@ -29,3 +30,32 @@ function convertToDictionary(items: ItemRecord[]): ItemDictionary {
 export function printReceipt(tags: string[]): string {
   return ''
 }
+
+
+
+export function getItemsCount(tags: string[]): ItemDictionary {
+  const itemsList:ItemRecord[]=[]
+  const allItems = loadAllItems()
+
+  tags.forEach(tag => {
+    const tagValue = tag.split('-')
+      allItems.forEach(item=>{
+        if(item.barcode===tagValue[0]){
+          let itemDetal:ItemRecord={
+            barcode: item.barcode,
+            name: item.name,
+            unit: item.unit,
+            price: item.price,
+            isProMotion: false,
+            quantity: tagValue.length>1?0:parseFloat(tagValue[1]),            
+          }
+          itemsList.push(itemDetal)
+        }
+      })
+    });
+    return convertToDictionary(itemsList)
+}
+
+
+
+
