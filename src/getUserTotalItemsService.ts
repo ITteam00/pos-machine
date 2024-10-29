@@ -44,3 +44,24 @@ export function countItems(items: string[]): Record<string, number> {
     return acc;
   }, {} as Record<string, number>);
 }
+
+export function getItemSubtotal(
+  receiptItems: ReceiptItemWithSubtotal[]
+): ReceiptItemWithSubtotal[] {
+  let seceiptItemWithSubtotal: ReceiptItemWithSubtotal[] = [];
+  receiptItems.forEach((item) => {
+    if (item.promotionType === "NONE") {
+      seceiptItemWithSubtotal.push({
+        ...item,
+        subtotal: item.price * item.quantity,
+      });
+    } else if (item.promotionType === "BUY_TWO_GET_ONE_FREE") {
+      const discountNum = Math.floor(item.quantity / 3);
+      seceiptItemWithSubtotal.push({
+        ...item,
+        subtotal: item.price * (item.quantity - discountNum),
+      });
+    }
+  });
+  return seceiptItemWithSubtotal;
+}

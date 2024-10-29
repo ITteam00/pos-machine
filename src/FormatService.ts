@@ -1,7 +1,7 @@
-import { ReceiptItem } from "../PosMachineDTO/ReceiptItemsDTO";
+import { ReceiptItemWithSubtotal } from "../PosMachineDTO/ReceiptItemsDTO";
 
 export class FormatService {
-  public static format(receiptItems: ReceiptItem[]): string {
+  public static format(receiptItems: ReceiptItemWithSubtotal[]): string {
     return ``;
   }
 }

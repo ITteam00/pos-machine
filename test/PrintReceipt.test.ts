@@ -1,9 +1,11 @@
 import { FormatService } from "../src/FormatService";
 import {
   countItems,
+  getItemSubtotal,
   getUserTotalItemsService,
 } from "../src/getUserTotalItemsService";
 import { printReceipt } from "../src/PrintReceipt";
+import { Item } from "../PosMachineDTO/ItemsDTO";
 
 describe("printReceipt", () => {
   it("should print receipt with promotion when print receipt", () => {
@@ -72,6 +74,23 @@ describe("getAllReceiptItems", () => {
         barcode
       )
     ).toEqual(output);
+  });
+});
+
+describe("getItemSubtotal", () => {
+  it("should return items getItemSubtotal", () => {
+    const item = [
+      {
+        barcode: "ITEM000000",
+        name: "Coca-Cola",
+        unit: "bottle",
+        price: 3.0,
+        promotionType: "BUY_TWO_GET_ONE_FREE",
+        quantity: 5,
+      },
+    ];
+    const output = getItemSubtotal(item);
+    expect(output[0].subtotal).toEqual(12);
   });
 });
 
