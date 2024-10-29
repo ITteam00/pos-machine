@@ -46,9 +46,9 @@ Discounted prices：7.50(yuan)
     ];
     const expected = new Map<string, number>([
       ["ITEM000001", 5],
-      ["ITEM000003-2.5", 1],
+      ["ITEM000003", 2.5],
       ["ITEM000005", 1],
-      ["ITEM000005-2", 1],
+      ["ITEM000005", 3],
     ]);
     const result = countTags(tags);
 
