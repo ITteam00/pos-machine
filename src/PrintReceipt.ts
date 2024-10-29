@@ -21,6 +21,8 @@ export function printReceipt(tags: string[]): string {
   const tagsCount = countTags(tags);
   const itemsInfo = extractItemInfo(items, tagsCount);
 
+  const itemsInfoWithPromotions = setItemPromotion(itemsInfo, promotions);
+
   const receipt = `***<store earning no money>Receipt ***
 Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
 Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
@@ -59,4 +61,20 @@ export function extractItemInfo(
     }
   });
   return itemsInfo;
+}
+
+export function setItemPromotion(
+  items: ItemInfo[],
+  promotions: Promotion[]
+): ItemInfo[] {
+  const re: ItemInfo[] = [];
+
+  promotions.forEach((promotion) => {
+    items.forEach((item) => {
+      if (promotion.barcodes.includes(item.barcode)) {
+        re.push({ ...item, promotionsType: promotion.type });
+      } else re.push({ ...item });
+    });
+  });
+  return re;
 }

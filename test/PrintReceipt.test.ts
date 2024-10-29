@@ -3,6 +3,8 @@ import {
   extractItemInfo,
   ItemInfo,
   printReceipt,
+  Promotion,
+  setItemPromotion,
 } from "../src/PrintReceipt";
 
 describe("printReceipt", () => {
@@ -84,6 +86,32 @@ Discounted prices：7.50(yuan)
     ];
 
     const result = extractItemInfo(items, tagsCnt);
+    expect(result).toEqual(expected);
+  });
+
+  it("should set promotion type for items with matching barcodes", () => {
+    const items: ItemInfo[] = [
+      { barcode: "ITEM000001", name: "Sprite", unit: "bottle", price: 3.0 },
+      { barcode: "ITEM000002", name: "Apple", unit: "pound", price: 5.5 },
+    ];
+
+    const promotion: Promotion = {
+      type: "BUY_TWO_GET_ONE_FREE",
+      barcodes: ["ITEM000001"],
+    };
+
+    const expected: ItemInfo[] = [
+      {
+        barcode: "ITEM000001",
+        name: "Sprite",
+        unit: "bottle",
+        price: 3.0,
+        promotionsType: "BUY_TWO_GET_ONE_FREE",
+      },
+      { barcode: "ITEM000002", name: "Apple", unit: "pound", price: 5.5 },
+    ];
+
+    const result = setItemPromotion(items, [promotion]);
     expect(result).toEqual(expected);
   });
 });
