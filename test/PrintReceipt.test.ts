@@ -1,6 +1,7 @@
 import {
   countTags,
   extractItemInfo,
+  getPrice,
   ItemInfo,
   printReceipt,
   Promotion,
@@ -114,4 +115,21 @@ Discounted prices：7.50(yuan)
     const result = setItemPromotion(items, [promotion]);
     expect(result).toEqual(expected);
   });
+
+  describe('getPrice', () => {
+    it('should calculate total price with BUY_TWO_GET_ONE_FREE promotion', () => {
+      const items: ItemInfo[] = [
+        { barcode: "ITEM000001", name: "Sprite", unit: "bottle", price: 3.0, quantity: 5, promotionsType: "BUY_TWO_GET_ONE_FREE" },
+        { barcode: "ITEM000002", name: "Apple", unit: "pound", price: 5.5, quantity: 2 },
+      ];
+      const expected: ItemInfo[] = [
+        { barcode: "ITEM000001", name: "Sprite", unit: "bottle", price: 3.0, quantity: 5, promotionsType: "BUY_TWO_GET_ONE_FREE", totalPrice: 12.0 },
+        { barcode: "ITEM000002", name: "Apple", unit: "pound", price: 5.5, quantity: 2, totalPrice: 11 },
+    
+      ];
+      const result = getPrice(items);
+      expect(result).toEqual(expected);
+    });
+  });
+
 });

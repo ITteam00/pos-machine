@@ -7,6 +7,7 @@ export interface ItemInfo {
   price: number;
   promotionsType?: string;
   quantity?: number;
+  totalPrice?: number;
 }
 
 export interface Promotion {
@@ -76,5 +77,21 @@ export function setItemPromotion(
       } else re.push({ ...item });
     });
   });
+  return re;
+}
+
+export function getPrice(items: ItemInfo[]): ItemInfo[] {
+  const re: ItemInfo[] = [];
+
+  items.forEach((item) => {
+    if (item.promotionsType === "BUY_TWO_GET_ONE_FREE" && item.quantity) {
+      const discountItemNum = Math.floor(item.quantity / 3);
+      const totalPrice = item.price * (item.quantity - discountItemNum);
+      re.push({ ...item, totalPrice });
+    } else {
+      re.push({ ...item, totalPrice: item.price * item.quantity! });
+    }
+  });
+
   return re;
 }
