@@ -14,8 +14,6 @@ interface ItemDictionary {
   [barcode: string]: ItemRecord;
 }
 
-const allPromotion = loadPromotions()
-
 
 function convertToDictionary(items: ItemRecord[]): ItemDictionary {
   const dictionary: ItemDictionary = {};
@@ -31,6 +29,7 @@ function convertToDictionary(items: ItemRecord[]): ItemDictionary {
 }
 
 export function isPromotion(barcode: string): boolean {
+  const allPromotion = loadPromotions()
   return allPromotion[0].barcodes.includes(barcode)
 }
 
@@ -38,7 +37,8 @@ export function isPromotion(barcode: string): boolean {
 export function printReceipt(tags: string[]): string {
   const itemDictionary = getItemsCount(tags)
   calculateExpense(itemDictionary)
-  return formatReceipt(itemDictionary)
+  const prices=calculateDiscount(itemDictionary)
+  return formatReceipt(itemDictionary,prices[0],prices[1])
 }
 
 
@@ -56,7 +56,7 @@ export function getItemsCount(tags: string[]): ItemDictionary {
           unit: item.unit,
           price: item.price,
           isProMotion: false,
-          quantity: tagValue.length <= 1 ? 1.00 : parseFloat(tagValue[1]),
+          quantity: tagValue.length <= 1 ? 1: parseFloat(tagValue[1]),
           totalExpense: 0
         }
         itemsList.push(itemDetal)
@@ -87,7 +87,8 @@ export function calculateDiscount(itemDictionary: ItemDictionary): [number, numb
   return [realPrice, totalPrice - realPrice]
 }
 
-export function formatReceipt(itemDictionary: ItemDictionary): string {
+
+export function formatReceipt(itemDictionary: ItemDictionary,totalExpense:number,dicount:number): string {
   let res = "***<store earning no money>Receipt ***\n"
   for (const item in itemDictionary) {
     res += `Name：${itemDictionary[item].name}，Quantity：${
@@ -95,8 +96,8 @@ export function formatReceipt(itemDictionary: ItemDictionary): string {
         itemDictionary[item].price.toFixed(2)}(yuan)，Subtotal：${itemDictionary[item].totalExpense.toFixed(2)}(yuan)\n`
   }
   res += `----------------------
-Total：${calculateDiscount(itemDictionary)[0].toFixed(2)}(yuan)
-Discounted prices：${calculateDiscount(itemDictionary)[1].toFixed(2)}(yuan)
+Total：${totalExpense.toFixed(2)}(yuan)
+Discounted prices：${dicount.toFixed(2)}(yuan)
 **********************`
   return res
 }
