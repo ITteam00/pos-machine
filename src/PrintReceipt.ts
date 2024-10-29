@@ -64,18 +64,23 @@ export function getItemsCount(tags: string[]): ItemDictionary {
   return convertToDictionary(itemsList)
 }
 
-export function calculateExpense(itemDictionary:ItemDictionary):void{
-  for(const item in itemDictionary){
-    itemDictionary[item].totalExpense=(itemDictionary[item].quantity-Math.floor(itemDictionary[item].quantity/3))*itemDictionary[item].price
+export function calculateExpense(itemDictionary: ItemDictionary): void {
+  for (const item in itemDictionary) {
+    if (itemDictionary[item].isProMotion === true) {
+      itemDictionary[item].totalExpense = (itemDictionary[item].quantity - Math.floor(itemDictionary[item].quantity / 3)) * itemDictionary[item].price
+    }
+    else {
+      itemDictionary[item].totalExpense = itemDictionary[item].quantity * itemDictionary[item].price
+    }
   }
 }
 
-export function calculateDiscount(itemDictionary:ItemDictionary):number{
-  let totalPrice=0;
-  let realPrice=0;
-  for(const item in itemDictionary){
-    realPrice+=itemDictionary[item].totalExpense
-    totalPrice+=itemDictionary[item].quantity*itemDictionary[item].price
+export function calculateDiscount(itemDictionary: ItemDictionary): [number, number] {
+  let totalPrice = 0;
+  let realPrice = 0;
+  for (const item in itemDictionary) {
+    realPrice += itemDictionary[item].totalExpense
+    totalPrice += itemDictionary[item].quantity * itemDictionary[item].price
   }
   return [realPrice, totalPrice - realPrice]
 }
