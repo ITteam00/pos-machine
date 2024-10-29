@@ -1,3 +1,4 @@
+import { countItems } from "../src/getUserTotalItemsService";
 import { printReceipt } from "../src/PrintReceipt";
 
 describe("printReceipt", () => {
@@ -28,6 +29,49 @@ Discounted prices：7.50(yuan)
 
 describe("getAllReceiptItems", () => {
   it("should return all receipt items", () => {
+    const allItems = [
+      {
+        barcode: "ITEM000000",
+        name: "Coca-Cola",
+        unit: "bottle",
+        price: 3.0,
+      },
+    ];
+
+    const allPromotions = [
+      {
+        type: "BUY_TWO_GET_ONE_FREE",
+        barcodes: ["ITEM000000", "ITEM000001"],
+      },
+      {
+        type: "OTHER_PROMOTION",
+        barcodes: ["ITEM000003", "ITEM000004"],
+      },
+    ];
+    const barcode = ["ITEM000000"];
+
     expect();
+  });
+});
+
+describe("countItems", () => {
+  it("should return count items", () => {
+    const barcode = [
+      "ITEM000001",
+      "ITEM000001",
+      "ITEM000001",
+      "ITEM000001",
+      "ITEM000001",
+      "ITEM000003-3",
+      "ITEM000005",
+      "ITEM000005",
+      "ITEM000005",
+    ];
+    const output = {
+      ITEM000001: 5,
+      ITEM000003: 3,
+      ITEM000005: 3,
+    };
+    expect(countItems(barcode)).toEqual(output);
   });
 });
