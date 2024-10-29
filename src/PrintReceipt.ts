@@ -7,37 +7,18 @@ export interface Item {
   price: number;
 }
 
-export interface Discount{ item: string; quantity: number }
+export interface Discount {
+  item: string;
+  quantity: number;
+}
 
 export function printReceipt(tags: string[]): string {
-
   const items = loadAllItems();
-  const promotions = loadPromotions();
+
   const processedCart = getProcessedCart(tags);
   let discounts: Discount[] = getDiscounts(processedCart);
 
-  const printedItems: string[] = [];
-  let totalSubtotal = 0;
-  let totalDiscount = 0;
-
-  discounts.forEach((discount) => {
-    const product = items.find((item) => item.barcode === discount.item);
-    let discountAmount = 0
-    if(promotions[0].barcodes.includes(product?.barcode!)) {
-       discountAmount = Math.floor(discount.quantity /3) * product!.price
-    }
-    const amount = product!.price * discount.quantity;
-    totalSubtotal += amount - discountAmount;
-    totalDiscount += discountAmount;
-    printedItems.push(
-      `Name：${product!.name}，Quantity：${discount.quantity} ${
-        product!.unit
-      }${discount.quantity > 1 ? 's' : ''}，Unit：${product!.price.toFixed(2)}(yuan)，Subtotal：${(
-        product!.price * discount.quantity -
-        discountAmount
-      ).toFixed(2)}(yuan)`
-    );
-  });
+  const {printedItems, totalSubtotal, totalDiscount} = render(discounts, items);
 
   const receipt = `***<store earning no money>Receipt ***
 ${printedItems.join("\n")}
@@ -74,7 +55,7 @@ export function getProcessedCart(tags: string[]): string[] {
   );
 }
 
-export function getDiscounts(processedCart: string[]): Discount[]{
+export function getDiscounts(processedCart: string[]): Discount[] {
   let discounts: Discount[] = [];
   for (let item of processedCart) {
     const [curBarcode, quantity] = item.split("-");
@@ -85,5 +66,34 @@ export function getDiscounts(processedCart: string[]): Discount[]{
     discounts.push({ item: curBarcode, quantity: parsedQuantity });
   }
   return discounts;
+}
 
+export function render(
+  discounts: Discount[],
+  items: Item[]
+): { printedItems: string[]; totalSubtotal: number; totalDiscount: number } {
+  const promotions = loadPromotions();
+  const printedItems: string[] = [];
+  let totalSubtotal = 0;
+  let totalDiscount = 0;
+
+  discounts.forEach((discount) => {
+    const product = items.find((item) => item.barcode === discount.item);
+    let discountAmount = 0;
+    if (promotions[0].barcodes.includes(product?.barcode!)) {
+      discountAmount = Math.floor(discount.quantity / 3) * product!.price;
+    }
+    const amount = product!.price * discount.quantity;
+    totalSubtotal += amount - discountAmount;
+    totalDiscount += discountAmount;
+    printedItems.push(
+      `Name：${product!.name}，Quantity：${discount.quantity} ${product!.unit}${
+        discount.quantity > 1 ? "s" : ""
+      }，Unit：${product!.price.toFixed(2)}(yuan)，Subtotal：${(
+        product!.price * discount.quantity -
+        discountAmount
+      ).toFixed(2)}(yuan)`
+    );
+  });
+  return {printedItems, totalSubtotal, totalDiscount}
 }

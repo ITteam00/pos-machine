@@ -1,4 +1,4 @@
-import { printReceipt, getProcessedCart,Item, Discount, getDiscounts } from '../src/PrintReceipt'
+import { printReceipt, getProcessedCart,Item, Discount, getDiscounts, render } from '../src/PrintReceipt'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -107,5 +107,37 @@ describe('getDiscounts', () => {
       { item: 'ITEM000003', quantity: 1 }
     ];
     expect(getDiscounts(processedCart)).toEqual(expected);
+  });
+});
+
+describe('render', () => {
+  it('should return correct printed items, total subtotal, and total discount', () => {
+    const discounts: Discount[] = [
+      { item: 'ITEM000001', quantity: 3 },
+      { item: 'ITEM000003', quantity: 2 }
+    ];
+
+    const items: Item[] = [
+      { barcode: 'ITEM000001', name: 'Sprite', unit: 'bottle', price: 3.00 },
+      { barcode: 'ITEM000003', name: 'Litchi', unit: 'pound', price: 15.00 }
+    ];
+
+    const promotions = [
+      {
+        type: 'BUY_TWO_GET_ONE_FREE',
+        barcodes: ['ITEM000001']
+      }
+    ];
+
+    const expected = {
+      printedItems: [
+        'Name：Sprite，Quantity：3 bottles，Unit：3.00(yuan)，Subtotal：6.00(yuan)',
+        'Name：Litchi，Quantity：2 pounds，Unit：15.00(yuan)，Subtotal：30.00(yuan)'
+      ],
+      totalSubtotal: 36.00,
+      totalDiscount: 3.00
+    };
+
+    expect(render(discounts, items)).toEqual(expected);
   });
 });
