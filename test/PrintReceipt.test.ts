@@ -5,7 +5,6 @@ import {
   getUserTotalItemsService,
 } from "../src/getUserTotalItemsService";
 import { printReceipt } from "../src/PrintReceipt";
-import { Item } from "../PosMachineDTO/ItemsDTO";
 
 describe("printReceipt", () => {
   it("should print receipt with promotion when print receipt", () => {
