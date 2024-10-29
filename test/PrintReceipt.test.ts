@@ -24,4 +24,17 @@ Discounted prices：7.50(yuan)
 
     expect(printReceipt(tags)).toEqual(expectText)
   })
+
+  it('should print receipt with promotion when print receipt', () => {
+    const tags: string[] = []
+
+    const expectText = `***<store earning no money>Receipt ***
+----------------------
+Total：0.00(yuan)
+Discounted prices：0.00(yuan)
+**********************`
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
+
 })
