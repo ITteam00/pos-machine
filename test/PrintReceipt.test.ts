@@ -1,6 +1,6 @@
-import { printReceipt, getProcessedCart,Item } from '../src/PrintReceipt'
+import { printReceipt, getProcessedCart,Item, Discount, getDiscounts } from '../src/PrintReceipt'
 
-fdescribe('printReceipt', () => {
+describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
     const tags = [
       'ITEM000001',
@@ -95,5 +95,17 @@ describe('getProcessedCart', () => {
     const tags = ['ITEM000001-2', 'ITEM000001-3', 'ITEM000003-1', 'ITEM000003-2'];
     const expected = ['ITEM000001-5', 'ITEM000003-3'];
     expect(getProcessedCart(tags)).toEqual(expected);
+  });
+});
+
+
+describe('getDiscounts', () => {
+  it('should return correct discounts for valid processed cart', () => {
+    const processedCart = ['ITEM000001-2', 'ITEM000003-1'];
+    const expected: Discount[] = [
+      { item: 'ITEM000001', quantity: 2 },
+      { item: 'ITEM000003', quantity: 1 }
+    ];
+    expect(getDiscounts(processedCart)).toEqual(expected);
   });
 });

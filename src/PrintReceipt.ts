@@ -7,27 +7,19 @@ export interface Item {
   price: number;
 }
 
+export interface Discount{ item: string; quantity: number }
+
 export function printReceipt(tags: string[]): string {
-  const printedItems: string[] = [];
 
   const items = loadAllItems();
   const promotions = loadPromotions();
-
-  const discounts: { item: string; quantity: number }[] = [];
-  
-  let totalSubtotal = 0;
-
   const processedCart = getProcessedCart(tags);
+  let discounts: Discount[] = getDiscounts(processedCart);
 
-  for (let item of processedCart) {
-    const [curBarcode, quantity] = item.split("-");
-    let parsedQuantity = Number(quantity);
-    if (isNaN(parsedQuantity)) {
-      parsedQuantity = 1;
-    }
-    discounts.push({ item: curBarcode, quantity: parsedQuantity });
-  }
+  const printedItems: string[] = [];
+  let totalSubtotal = 0;
   let totalDiscount = 0;
+
   discounts.forEach((discount) => {
     const product = items.find((item) => item.barcode === discount.item);
     let discountAmount = 0
@@ -45,7 +37,6 @@ export function printReceipt(tags: string[]): string {
         discountAmount
       ).toFixed(2)}(yuan)`
     );
-
   });
 
   const receipt = `***<store earning no money>Receipt ***
@@ -81,4 +72,18 @@ export function getProcessedCart(tags: string[]): string[] {
     itemCounts,
     ([barcode, quantity]) => `${barcode}-${quantity}`
   );
+}
+
+export function getDiscounts(processedCart: string[]): Discount[]{
+  let discounts: Discount[] = [];
+  for (let item of processedCart) {
+    const [curBarcode, quantity] = item.split("-");
+    let parsedQuantity = Number(quantity);
+    if (isNaN(parsedQuantity)) {
+      parsedQuantity = 1;
+    }
+    discounts.push({ item: curBarcode, quantity: parsedQuantity });
+  }
+  return discounts;
+
 }
