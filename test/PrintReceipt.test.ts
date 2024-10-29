@@ -42,6 +42,22 @@ Discounted prices：0.00(yuan)
   })
 
 
+  it('should print receipt without s when print receipt', () => {
+    const tags = [
+      'ITEM000001',
+    ]
+
+    const expectText = `***<store earning no money>Receipt ***
+Name：Sprite，Quantity：1 bottle，Unit：3.00(yuan)，Subtotal：3.00(yuan)
+----------------------
+Total：3.00(yuan)
+Discounted prices：0.00(yuan)
+**********************`
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+
   it('should return item-quantity hashMap when use calculateQuantity', () => {
     const tags = [
       'ITEM000001',
