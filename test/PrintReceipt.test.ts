@@ -196,11 +196,6 @@ Discounted prices：7.50(yuan)
 **********************`;
 
     const result = generateReceipt(items);
-
-    // 打印详细信息
-    console.log("Result:", result);
-    console.log("Expected:", expectedReceipt);
-
     expect(result).toEqual(expectedReceipt);
   });
 });
