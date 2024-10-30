@@ -25,8 +25,8 @@ export function printReceipt(tags: string[]): string {
   const itemsInfoWithPromotions = setItemPromotion(itemsInfo, promotions);
   const itemsWithTotalprice = getPrice(itemsInfoWithPromotions);
 
-  const re = generateReceipt(itemsWithTotalprice);
-  return re;
+  const result = generateReceipt(itemsWithTotalprice);
+  return result;
 }
 
 export function countTags(tags: string[]): Map<string, number> {
