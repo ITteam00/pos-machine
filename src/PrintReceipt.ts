@@ -13,6 +13,7 @@ interface ItemRecord {
 interface ItemDictionary {
   [barcode: string]: ItemRecord;
 }
+const allPromotion = loadPromotions()
 
 
 function convertToDictionary(items: ItemRecord[]): ItemDictionary {
@@ -20,16 +21,14 @@ function convertToDictionary(items: ItemRecord[]): ItemDictionary {
   for (const item of items) {
     if (dictionary[item.barcode]) {
       dictionary[item.barcode].quantity += item.quantity;
-      dictionary[item.barcode].isProMotion = isPromotion(item.barcode)
     } else {
-      dictionary[item.barcode] = { ...item, quantity: item.quantity };
+      dictionary[item.barcode] = { ...item};
     }
   }
   return dictionary;
 }
 
 export function isPromotion(barcode: string): boolean {
-  const allPromotion = loadPromotions()
   return allPromotion[0].barcodes.includes(barcode)
 }
 
@@ -55,7 +54,7 @@ export function getItemsCount(tags: string[]): ItemDictionary {
           name: item.name,
           unit: item.unit,
           price: item.price,
-          isProMotion: false,
+          isProMotion: isPromotion(item.barcode),
           quantity: tagValue.length <= 1 ? 1: parseFloat(tagValue[1]),
           totalExpense: 0
         }
