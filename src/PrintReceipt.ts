@@ -78,6 +78,7 @@ export function setItemPromotion(
   return re;
 }
 
+
 export function getPrice(items: ItemInfo[]): ItemInfo[] {
   const re: ItemInfo[] = [];
 
