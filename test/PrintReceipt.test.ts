@@ -2,6 +2,8 @@ import {printReceipt} from '../src/PrintReceipt'
 import { calculateQuantity } from '../src/PrintReceipt'
 import { calculateSubtotal } from '../src/PrintReceipt'
 import { loadAllItems } from '../src/Dependencies'
+import { Promotion } from '../src/Promotion.model'
+import { loadPromotions } from '../src/Dependencies'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -104,10 +106,12 @@ Discounted prices：0.00(yuan)
     expectItemSubtotalDict.set('ITEM000005', 9.00)
 
     const allItems = loadAllItems();
+    const allPromotions:Promotion[] = loadPromotions()
+
 
     const expectedRes = {itemSubtotal:expectItemSubtotalDict, totalDiscount:7.50}
 
-    expect(calculateSubtotal(itemQuantity, allItems)).toEqual(expectedRes)
+    expect(calculateSubtotal(itemQuantity, allItems, allPromotions)).toEqual(expectedRes)
   })
 
 })

@@ -4,8 +4,9 @@ import { Promotion } from './Promotion.model';
 
 export function printReceipt(tags: string[]): string {
   const allItems = loadAllItems();
+  const allPromotions:Promotion[] = loadPromotions()
   let itemQuantity = calculateQuantity(tags)
-  let {itemSubtotal, totalDiscount} = calculateSubtotal(itemQuantity, allItems)
+  let {itemSubtotal, totalDiscount} = calculateSubtotal(itemQuantity, allItems, allPromotions)
   let totalPrice = 0
   let receiptItems = '';
 
@@ -55,7 +56,7 @@ export function calculateQuantity(tags: string[]) {
 
 
 
-export function calculateSubtotal(itemQuantity:Map<string,number>, allItems: Item[]) {
+export function calculateSubtotal(itemQuantity:Map<string,number>, allItems: Item[], allPromotions: Promotion[]) {
   let itemSubtotal = new Map<string, number>()
   let totalDiscount = 0
   for ( let [barcode, quantity] of itemQuantity) {
@@ -63,7 +64,6 @@ export function calculateSubtotal(itemQuantity:Map<string,number>, allItems: Ite
     const singlePrice: number = item!.price
     let subDiscount = 0
     let isPromotion = false
-    let allPromotions:Promotion[] = loadPromotions()
     if (allPromotions[0].barcodes.includes(barcode)) {
       isPromotion = true
     }
