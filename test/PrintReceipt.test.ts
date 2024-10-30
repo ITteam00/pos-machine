@@ -1,4 +1,9 @@
 import {printReceipt} from '../src/PrintReceipt'
+import { calculateQuantity } from '../src/PrintReceipt'
+import { calculateSubtotal } from '../src/PrintReceipt'
+import { loadAllItems } from '../src/Dependencies'
+import { Promotion } from '../src/Promotion.model'
+import { loadPromotions } from '../src/Dependencies'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
@@ -24,4 +29,89 @@ Discounted prices：7.50(yuan)
 
     expect(printReceipt(tags)).toEqual(expectText)
   })
+
+
+  it('should print empty receipt when print receipt', () => {
+    const tags: string[] = []
+
+    const expectText = `***<store earning no money>Receipt ***
+----------------------
+Total：0.00(yuan)
+Discounted prices：0.00(yuan)
+**********************`
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+
+  it('should print receipt without s when print receipt', () => {
+    const tags = [
+      'ITEM000001',
+    ]
+
+    const expectText = `***<store earning no money>Receipt ***
+Name：Sprite，Quantity：1 bottle，Unit：3.00(yuan)，Subtotal：3.00(yuan)
+----------------------
+Total：3.00(yuan)
+Discounted prices：0.00(yuan)
+**********************`
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
+
+
+  it('should return item-quantity hashMap when use calculateQuantity', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const expectDict = new Map<string, number>();
+    expectDict.set('ITEM000001', 5)
+    expectDict.set('ITEM000003', 2.5)
+    expectDict.set('ITEM000005', 3)
+
+    expect(calculateQuantity(tags)).toEqual(expectDict)
+  })
+  
+
+
+  it('should return item-subtotal hashMap when use calculateSubtotal', () => {
+    const tags = [
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const itemQuantity = new Map<string, number>();
+    itemQuantity.set('ITEM000001', 5)
+    itemQuantity.set('ITEM000003', 2.5)
+    itemQuantity.set('ITEM000005', 3)
+
+
+    const expectItemSubtotalDict = new Map<string, number>();
+    expectItemSubtotalDict.set('ITEM000001', 12.00)
+    expectItemSubtotalDict.set('ITEM000003', 37.5)
+    expectItemSubtotalDict.set('ITEM000005', 9.00)
+
+    const allItems = loadAllItems();
+    const allPromotions:Promotion[] = loadPromotions()
+
+
+    const expectedRes = {itemSubtotal:expectItemSubtotalDict, totalDiscount:7.50}
+
+    expect(calculateSubtotal(itemQuantity, allItems, allPromotions)).toEqual(expectedRes)
+  })
+
 })
