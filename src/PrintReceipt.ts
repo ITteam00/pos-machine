@@ -1,5 +1,107 @@
-import {loadAllItems, loadPromotions} from './Dependencies'
+import { loadAllItems, loadPromotions } from './Dependencies'
+
+interface ItemRecord {
+  barcode: string;
+  name: string;
+  unit: string;
+  price: number;
+  isProMotion: boolean;
+  quantity: number;
+  totalExpense: number
+}
+
+export interface ItemDictionary {
+  [barcode: string]: ItemRecord;
+}
+const allPromotion = loadPromotions()
+
+
+function convertToDictionary(items: ItemRecord[]): ItemDictionary {
+  const dictionary: ItemDictionary = {};
+  for (const item of items) {
+    if (dictionary[item.barcode]) {
+      dictionary[item.barcode].quantity += item.quantity;
+    } else {
+      dictionary[item.barcode] = { ...item};
+    }
+  }
+  return dictionary;
+}
+
+export function isPromotion(barcode: string): boolean {
+  return allPromotion[0].barcodes.includes(barcode)
+}
+
 
 export function printReceipt(tags: string[]): string {
-  return ''
+  const itemDictionary = getItemsCount(tags)
+  calculateExpense(itemDictionary)
+  const prices=calculateDiscount(itemDictionary)
+  return formatReceipt(itemDictionary,prices[0],prices[1])
 }
+
+
+export function getItemsCount(tags: string[]): ItemDictionary {
+  const itemsList: ItemRecord[] = []
+  const allItems = loadAllItems()
+
+  tags.forEach(tag => {
+    const tagValue = tag.split('-')
+    allItems.forEach(item => {
+      if (item.barcode === tagValue[0]) {
+        let itemDetal: ItemRecord = {
+          barcode: item.barcode,
+          name: item.name,
+          unit: item.unit,
+          price: item.price,
+          isProMotion: isPromotion(item.barcode),
+          quantity: tagValue.length <= 1 ? 1: parseFloat(tagValue[1]),
+          totalExpense: 0
+        }
+        itemsList.push(itemDetal)
+      }
+    })
+  });
+  return convertToDictionary(itemsList)
+}
+
+export function calculateExpense(itemDictionary: ItemDictionary): ItemDictionary {
+  const dicChangeExpense:ItemDictionary=itemDictionary
+  for (const item in dicChangeExpense) {
+    if (dicChangeExpense[item].isProMotion === true) {
+      dicChangeExpense[item].totalExpense = (dicChangeExpense[item].quantity - Math.floor(dicChangeExpense[item].quantity / 3)) * dicChangeExpense[item].price
+    }
+    else {
+      dicChangeExpense[item].totalExpense = dicChangeExpense[item].quantity * dicChangeExpense[item].price
+    }
+  }
+  return dicChangeExpense
+}
+
+export function calculateDiscount(itemDictionary: ItemDictionary): [number, number] {
+  let totalPrice = 0;
+  let realPrice = 0;
+  for (const item in itemDictionary) {
+    realPrice += itemDictionary[item].totalExpense
+    totalPrice += itemDictionary[item].quantity * itemDictionary[item].price
+  }
+  return [realPrice, totalPrice - realPrice]
+}
+
+
+export function formatReceipt(itemDictionary: ItemDictionary,totalExpense:number,dicount:number): string {
+  let res = "***<store earning no money>Receipt ***\n"
+  for (const item in itemDictionary) {
+    res += `Name：${itemDictionary[item].name}，Quantity：${
+      itemDictionary[item].quantity} ${itemDictionary[item].unit}${itemDictionary[item].quantity > 1 ? 's' : ''}，Unit：${
+        itemDictionary[item].price.toFixed(2)}(yuan)，Subtotal：${itemDictionary[item].totalExpense.toFixed(2)}(yuan)\n`
+  }
+  res += `----------------------
+Total：${totalExpense.toFixed(2)}(yuan)
+Discounted prices：${dicount.toFixed(2)}(yuan)
+**********************`
+  return res
+}
+
+
+
