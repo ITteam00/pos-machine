@@ -6,10 +6,10 @@ export class getUserTotalItemsService {
   public static getUserTotalReceiptItems(
     allItems: Item[],
     allPromotions: Promotion[],
-    inPutBarcodes: string[]
+    inputBarcodes: string[]
   ): ReceiptItemWithSubtotal[] {
     const receiptItems: ReceiptItemWithSubtotal[] = [];
-    const itemCounts = countItems(inPutBarcodes);
+    const itemCounts = countItems(inputBarcodes);
     for (const [barcode, quantity] of Object.entries(itemCounts)) {
       const item = allItems.find((item) => item.barcode === barcode);
       const promotion = allPromotions.find((promo) =>

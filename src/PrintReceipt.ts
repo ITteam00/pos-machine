@@ -9,7 +9,7 @@ export function printReceipt(tags: string[]): string {
     allPromotions,
     tags
   );
-  let str = FormatService.format(receiptItems);
+  let formattedResult = FormatService.format(receiptItems);
 
-  return str;
+  return formattedResult;
 }

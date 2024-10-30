@@ -2,27 +2,27 @@ import { ReceiptItemWithSubtotal } from "../PosMachineDTO/ReceiptItemsDTO";
 
 export class FormatService {
   public static format(receiptItems: ReceiptItemWithSubtotal[]): string {
-    let str = "";
-    let realTotal = 0;
-    let disCount = 0;
+    let formatReceipt = "";
+    let realUserTotalPrice = 0;
+    let discountPrice = 0;
     receiptItems.forEach((item) => {
-      str +=
+      formatReceipt +=
         `Name：${item.name}，Quantity：${item.quantity} ${
           item.unit
         }，Unit：${item.price.toFixed(
           2
         )}(yuan)，Subtotal：${item.subtotal?.toFixed(2)}(yuan)` + `\n`;
-      realTotal += item.subtotal!;
-      disCount += item.price * item.quantity - item.subtotal!;
+      realUserTotalPrice += item.subtotal!;
+      discountPrice += item.price * item.quantity - item.subtotal!;
     });
 
     return (
       `***<store earning no money>Receipt ***` +
       `\n` +
-      `${str.trim()}
+      `${formatReceipt.trim()}
 ----------------------
-Total：${realTotal.toFixed(2)}(yuan)
-Discounted prices：${disCount.toFixed(2)}(yuan)
+Total：${realUserTotalPrice.toFixed(2)}(yuan)
+Discounted prices：${discountPrice.toFixed(2)}(yuan)
 **********************`
     );
   }
