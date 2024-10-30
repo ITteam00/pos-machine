@@ -59,10 +59,7 @@ export function getDiscounts(processedCart: string[]): Discount[] {
   let discounts: Discount[] = [];
   for (let item of processedCart) {
     const [curBarcode, quantity] = item.split("-");
-    let parsedQuantity = Number(quantity);
-    if (isNaN(parsedQuantity)) {
-      parsedQuantity = 1;
-    }
+    let parsedQuantity = parseFloat(quantity);
     discounts.push({ item: curBarcode, quantity: parsedQuantity });
   }
   return discounts;
