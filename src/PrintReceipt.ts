@@ -66,33 +66,33 @@ export function setItemPromotion(
   items: ItemInfo[],
   promotions: Promotion[]
 ): ItemInfo[] {
-  const re: ItemInfo[] = [];
+  const result: ItemInfo[] = [];
 
   promotions.forEach((promotion) => {
     items.forEach((item) => {
       if (promotion.barcodes.includes(item.barcode)) {
-        re.push({ ...item, promotionsType: promotion.type });
-      } else re.push({ ...item });
+        result.push({ ...item, promotionsType: promotion.type });
+      } else result.push({ ...item });
     });
   });
-  return re;
+  return result;
 }
 
 
 export function getPrice(items: ItemInfo[]): ItemInfo[] {
-  const re: ItemInfo[] = [];
+  const result: ItemInfo[] = [];
 
   items.forEach((item) => {
     if (item.promotionsType === "BUY_TWO_GET_ONE_FREE" && item.quantity) {
       const discountItemNum = Math.floor(item.quantity / 3);
       const totalPrice = item.price * (item.quantity - discountItemNum);
-      re.push({ ...item, totalPrice });
+      result.push({ ...item, totalPrice });
     } else {
-      re.push({ ...item, totalPrice: item.price * item.quantity! });
+      result.push({ ...item, totalPrice: item.price * item.quantity! });
     }
   });
 
-  return re;
+  return result;
 }
 
 
