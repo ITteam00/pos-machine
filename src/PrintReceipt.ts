@@ -30,28 +30,27 @@ Discounted prices：${totalDiscountStr}(yuan)
 }
 
 
-export function calculateQuantity(tags: string[]) {
-  let itemQuantity = new Map<string, number>()
+export function calculateQuantity(tags: string[]): Map<string, number> {
+  const itemQuantity = new Map<string, number>();
 
-  for (let item of tags) {
-    let numberToAdd: number;
-    if (!item.includes("-")) {
-      numberToAdd = 1
-    } else {
-      let splitedItem = item.split('-')
-      item = splitedItem[0]
-      numberToAdd = parseFloat(splitedItem[1])
-    }
+  tags.forEach(tag => {
+    const [item, quantity] = parseTag(tag);
+    const currentQuantity = itemQuantity.get(item) || 0;
+    itemQuantity.set(item, currentQuantity + quantity);
+  });
 
-    if (!itemQuantity.has(item)) {
-      itemQuantity.set(item, numberToAdd)
-    } else {
-      itemQuantity.set(item, itemQuantity.get(item)! + numberToAdd)
-    }
-  }
-
-  return itemQuantity
+  return itemQuantity;
 }
+
+function parseTag(tag: string): [string, number] {
+  if (!tag.includes("-")) {
+    return [tag, 1];
+  } else {
+    const [item, quantity] = tag.split('-');
+    return [item, parseFloat(quantity)];
+  }
+}
+
 
 
 
