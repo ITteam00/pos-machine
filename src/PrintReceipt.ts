@@ -10,7 +10,7 @@ interface ItemRecord {
   totalExpense: number
 }
 
-interface ItemDictionary {
+export interface ItemDictionary {
   [barcode: string]: ItemRecord;
 }
 const allPromotion = loadPromotions()
@@ -65,15 +65,17 @@ export function getItemsCount(tags: string[]): ItemDictionary {
   return convertToDictionary(itemsList)
 }
 
-export function calculateExpense(itemDictionary: ItemDictionary): void {
-  for (const item in itemDictionary) {
-    if (itemDictionary[item].isProMotion === true) {
-      itemDictionary[item].totalExpense = (itemDictionary[item].quantity - Math.floor(itemDictionary[item].quantity / 3)) * itemDictionary[item].price
+export function calculateExpense(itemDictionary: ItemDictionary): ItemDictionary {
+  const dicChangeExpense:ItemDictionary=itemDictionary
+  for (const item in dicChangeExpense) {
+    if (dicChangeExpense[item].isProMotion === true) {
+      dicChangeExpense[item].totalExpense = (dicChangeExpense[item].quantity - Math.floor(dicChangeExpense[item].quantity / 3)) * dicChangeExpense[item].price
     }
     else {
-      itemDictionary[item].totalExpense = itemDictionary[item].quantity * itemDictionary[item].price
+      dicChangeExpense[item].totalExpense = dicChangeExpense[item].quantity * dicChangeExpense[item].price
     }
   }
+  return dicChangeExpense
 }
 
 export function calculateDiscount(itemDictionary: ItemDictionary): [number, number] {
